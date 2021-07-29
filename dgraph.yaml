@@ -16,12 +16,15 @@ spec:
   - name: alpha
     port: 8080
     targetPort: 8080
+    nodePort: 32002
   - name: zero
     port: 9080
     targetPort: 9080
+    nodePort: 32004
   - name: ratel
     port: 8000
     targetPort: 8000
+    nodePort: 32003
   selector:
     app: dgraph
 ---
