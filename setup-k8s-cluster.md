@@ -45,4 +45,5 @@ istioctl manifest generate --set profile=demo | kubectl delete --ignore-not-foun
 kubectl delete namespace istio-system
 kubectl label namespace default istio-injection-
 kubectl delete -f mentat.yaml
+kubectl delete -f dgraph.yaml
 ```
