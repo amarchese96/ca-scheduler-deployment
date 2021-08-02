@@ -36,6 +36,136 @@ roleRef:
   name: node-reader
   apiGroup: rbac.authorization.k8s.io
 ---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mentat-configmap
+  namespace: mentat
+data:
+  node_latencies_distribution.json: |
+    {
+    "kubenode01": {
+      "kubenode02": {
+        "distribution": "gaussian",
+        "params": {
+          "mean": 0.1,
+          "std": 0.001
+        }
+      },
+      "kubenode11": {
+        "distribution": "gaussian",
+        "params": {
+          "mean": 0.1,
+          "std": 0.001
+        }
+      },
+      "kubenode12": {
+        "distribution": "gaussian",
+        "params": {
+          "mean": 0.1,
+          "std": 0.001
+        }
+      },
+      "kubemaster": {
+        "distribution": "gaussian",
+        "params": {
+          "mean": 0.1,
+          "std": 0.001
+        }
+      }
+    },
+    "kubenode02": {
+      "kubenode01": {
+        "distribution": "gaussian",
+        "params": {
+          "mean": 0.1,
+          "std": 0.001
+        }
+      },
+      "kubenode11": {
+        "distribution": "gaussian",
+        "params": {
+          "mean": 0.1,
+          "std": 0.001
+        }
+      },
+      "kubenode12": {
+        "distribution": "gaussian",
+        "params": {
+          "mean": 0.1,
+          "std": 0.001
+        }
+      },
+      "kubemaster": {
+        "distribution": "gaussian",
+        "params": {
+          "mean": 0.1,
+          "std": 0.001
+        }
+      }
+    },
+    "kubenode11": {
+      "kubenode01": {
+        "distribution": "gaussian",
+        "params": {
+          "mean": 0.1,
+          "std": 0.001
+        }
+      },
+      "kubenode02": {
+        "distribution": "gaussian",
+        "params": {
+          "mean": 0.1,
+          "std": 0.001
+        }
+      },
+      "kubenode12": {
+        "distribution": "gaussian",
+        "params": {
+          "mean": 0.1,
+          "std": 0.001
+        }
+      },
+      "kubemaster": {
+        "distribution": "gaussian",
+        "params": {
+          "mean": 0.1,
+          "std": 0.001
+        }
+      }
+    },
+    "kubenode12": {
+      "kubenode01": {
+        "distribution": "gaussian",
+        "params": {
+          "mean": 0.1,
+          "std": 0.001
+        }
+      },
+      "kubenode02": {
+        "distribution": "gaussian",
+        "params": {
+          "mean": 0.1,
+          "std": 0.001
+        }
+      },
+      "kubenode11": {
+        "distribution": "gaussian",
+        "params": {
+          "mean": 0.1,
+          "std": 0.001
+        }
+      },
+      "kubemaster": {
+        "distribution": "gaussian",
+        "params": {
+          "mean": 0.1,
+          "std": 0.001
+        }
+      }
+    }
+    }
+---
 kind: Service
 apiVersion: v1
 metadata:
@@ -78,4 +208,11 @@ spec:
               fieldPath: spec.nodeName
         - name: SLEEP_SECONDS
           value: "5"
-
+        volumeMounts:
+          - name: mentat-configmap
+            mountPath: /app/node_latencies_distribution.json
+            subPath: node_latencies_distribution.json
+      volumes:
+      - name: mentat-configmap
+        configMap:
+          name: mentat-configmap
