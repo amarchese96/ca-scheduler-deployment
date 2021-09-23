@@ -1,36 +1,38 @@
-### Import admin.conf file inside root path of the project from kubernetes cluster master node
+### Setup K8s cluster
 
-### Export KUBECONFIG environment variable
+Execute the following steps to setup a standard Kubernetes cluster for the deployment of the communication-aware scheduler:
+
+- Export KUBECONFIG environment variable
 ```
-export KUBECONFIG=/home/angelo/scheduler-plugin-project/admin.conf
+export KUBECONFIG=/home/angelo/scheduler-plugins-project/admin.conf
 ```
 
-### Deploy mentat app
+- Deploy mentat app
 ```
 kubectl apply -f mentat.yaml
 ```
 
-### Deploy Dgraph database
+- Deploy Dgraph database
 ```
 kubectl apply -f dgraph.yaml
 ```
 
-### Install istio
+- Install Istio
 ```
 istioctl install --set profile=demo -y
 ```
 
-### Label default namespace
+- Label default namespace
 ```
 kubectl label namespace default istio-injection=enabled
 ```
 
-### setup addons
+- Setup addons
 ```
 kubectl apply -f istio-addons
 ```
 
-### enable access to addons
+- Enable access to addons
 ```
 istioctl dashboard prometheus
 istioctl dashboard kiali
@@ -38,7 +40,7 @@ istioctl dashboard jaeger
 istioctl dashboard grafana
 ```
 
-### Clean up
+- Clean up
 ```
 kubectl delete -f istio-addons
 istioctl manifest generate --set profile=demo | kubectl delete --ignore-not-found=true -f -
