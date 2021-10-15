@@ -1,0 +1,4 @@
+- promethues: 32000
+- kiali: 32001
+- dgraph alpha: 32002
+- dgraph ratel: 32003

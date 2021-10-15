@@ -4,7 +4,7 @@ Execute the following steps to setup a standard Kubernetes cluster for the deplo
 
 - Export KUBECONFIG environment variable
 ```
-export KUBECONFIG=/home/angelo/scheduler-plugins-project/admin.conf
+export KUBECONFIG=/path/to/admin.conf
 ```
 
 - Deploy mentat app

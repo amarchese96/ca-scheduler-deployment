@@ -1,10 +1,9 @@
 ### Build and deploy the communication aware scheduler
 
-After setting up a Kubernetes cluster, execute the following steps inside the *angelo1996/scheduler-plugins* project to build and deploy the communication-aware scheduler:
+After setting up a Kubernetes cluster, execute the following steps inside the *angelo1996/scheduler-plugins* project to build the communication-aware scheduler:
 
-- Build scheduler docker image
+- Build scheduler docker image (inside scheduler-plugins folder)
 ```
-cd scheduler-plugins
 make local-image LOCAL_REGISTRY=docker.io/angelo1996 LOCAL_IMAGE=kube-scheduler:latest
 ```
 
@@ -13,18 +12,14 @@ make local-image LOCAL_REGISTRY=docker.io/angelo1996 LOCAL_IMAGE=kube-scheduler:
 docker push docker.io/angelo1996/kube-scheduler:latest
 ```
 
-- Export KUBECONFIG environment variable
-```
-export KUBECONFIG=/home/angelo/scheduler-plugins-project/admin.conf
-```
+Execute the following steps inside this project to deploy the communication-aware scheduler:
 
 - Deploy scheduler with Helm
 ```
-cd manifests/install/charts
-helm install scheduler-plugins as-a-second-scheduler/
+helm install ca-scheduler scheduler/
 ```
 
 - Clean up
 ```
-helm uninstall scheduler-plugins
+helm uninstall ca-scheduler
 ```
