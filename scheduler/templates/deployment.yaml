@@ -1,0 +1,87 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: {{ .Values.controller.name }}
+  namespace: {{ .Values.controller.namespace }}
+  labels:
+    app: scheduler-plugins-controller
+spec:
+  replicas: {{ .Values.controller.replicaCount }}
+  selector:
+    matchLabels:
+      app: scheduler-plugins-controller
+  template:
+    metadata:
+      labels:
+        app: scheduler-plugins-controller
+    spec:
+      serviceAccount: scheduler-plugins-controller
+      containers:
+      - name: scheduler-plugins-controller
+        image: {{ .Values.controller.image }}
+        imagePullPolicy: IfNotPresent
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    component: scheduler
+  name: {{ .Values.scheduler.name }}
+  namespace: {{ .Values.scheduler.namespace }}
+spec:
+  selector:
+    matchLabels:
+      component: scheduler
+  replicas: {{ .Values.scheduler.replicaCount }}
+  template:
+    metadata:
+      labels:
+        component: scheduler
+    spec:
+      serviceAccountName: scheduler-plugins-scheduler
+      containers:
+      - command:
+        - /bin/kube-scheduler
+        - --address=0.0.0.0
+        - --leader-elect=false
+        - --config=/etc/kubernetes/scheduler-config.yaml
+        - --scheduler-name=scheduler-plugins-scheduler
+        image: {{ .Values.scheduler.image }}
+        env:
+        - name: PROMETHEUS_SERVER_ADDRESS
+          value: {{ .Values.scheduler.prometheus_server_address }}
+        - name: DGRAPH_SERVER_ADDRESS
+          value: {{ .Values.scheduler.dgraph_server_address }}
+        - name: PRIORITY_WEIGHT
+          value: "{{ .Values.scheduler.priority_weight }}"
+        - name: TRAFFIC_WEIGHT
+          value: "{{ .Values.scheduler.traffic_weight }}"
+        - name: SAME_NODE_WEIGHT
+          value: "{{ .Values.scheduler.same_node_weight }}"
+        - name: NO_LATENCY_WEIGHT
+          value: "{{ .Values.scheduler.no_latency_weight }}"
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 10251
+          initialDelaySeconds: 15
+        name: scheduler-plugins-scheduler
+        readinessProbe:
+          httpGet:
+            path: /healthz
+            port: 10251
+        resources:
+          requests:
+            cpu: '0.1'
+        securityContext:
+          privileged: false
+        volumeMounts:
+        - name: scheduler-config
+          mountPath: /etc/kubernetes
+          readOnly: true
+      hostNetwork: false
+      hostPID: false
+      volumes:
+      - name: scheduler-config
+        configMap:
+          name: scheduler-config
