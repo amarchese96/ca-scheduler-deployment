@@ -45,7 +45,7 @@ spec:
         - --address=0.0.0.0
         - --leader-elect=false
         - --config=/etc/kubernetes/scheduler-config.yaml
-        - --scheduler-name=scheduler-plugins-scheduler
+        #- --scheduler-name=scheduler-plugins-scheduler
         image: {{ .Values.scheduler.image }}
         env:
         - name: PROMETHEUS_SERVER_ADDRESS

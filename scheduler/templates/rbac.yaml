@@ -3,6 +3,9 @@ kind: ClusterRole
 metadata:
   name: scheduler-plugins-scheduler
 rules:
+- apiGroups: [""]
+  resources: ["namespaces"]
+  verbs: ["get", "list", "watch"]
 - apiGroups: ["", "events.k8s.io"]
   resources: ["events"]
   verbs: ["create", "patch", "update"]
