@@ -27,22 +27,34 @@ istioctl install --set profile=demo -y
 kubectl label namespace default istio-injection=enabled
 ```
 
-- Setup addons
+- Install prometheus server
 ```
-kubectl apply -f istio-addons
+helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+helm install prometheus prometheus-community/prometheus -n istio-system --values observability/prometheus-values.yml
 ```
 
-- Enable access to addons
+- Install grafana dashboard
 ```
-istioctl dashboard prometheus
-istioctl dashboard kiali
-istioctl dashboard jaeger
-istioctl dashboard grafana
+helm repo add grafana https://grafana.github.io/helm-charts
+helm install grafana grafana/grafana -n istio-system --values observability/grafana-values.yml
+```
+
+- Install jaeger
+```
+kubectl apply -f observability/jaeger.yml -n istio-system
+```
+
+- Install kiali
+```
+kubectl apply -f observability/kiali.yml -n istio-system
 ```
 
 - Clean up
 ```
-kubectl delete -f istio-addons
+kubectl delete -f observability/kiali.yml -n istio-system
+kubectl delete -f observability/jaeger.yml -n istio-system
+helm uninstall grafana -n istio-system
+helm uninstall prometheus -n istio-system
 istioctl manifest generate --set profile=demo | kubectl delete --ignore-not-found=true -f -
 kubectl delete namespace istio-system
 kubectl label namespace default istio-injection-

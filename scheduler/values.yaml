@@ -7,7 +7,7 @@ scheduler:
   image: docker.io/angelo1996/kube-scheduler:latest
   namespace: scheduler-plugins
   replicaCount: 1
-  prometheus_server_address: http://prometheus.istio-system.svc.cluster.local:9090
+  prometheus_server_address: http://prometheus-server.istio-system.svc.cluster.local:9090
   dgraph_server_address: dgraph.dgraph.svc.cluster.local:9080
   priority_weight: 1.0
   traffic_weight: 1.0
